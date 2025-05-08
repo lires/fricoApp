@@ -1,18 +1,86 @@
-import { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
-import { Link, Stack } from "expo-router";
+import { useState, useEffect } from "react";
+import styles from "./login.styles";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
+import { Link, Stack, useRouter } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+// 🔍 Validation d'email
+const isValidEmail = (email: string) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const router = useRouter();
 
-  const handleLogin = () => {
-    console.log("Connexion avec :", { email, password });
+  // Vérification si l'utilisateur est déjà connecté au chargement du composant
+  useEffect(() => {
+    const checkIfUserIsLoggedIn = async () => {
+      const sessionUser = await AsyncStorage.getItem("sessionUser");
+      if (sessionUser) {
+        router.replace("/"); // Redirige vers la page d'accueil si déjà connecté
+      }
+    };
+
+    checkIfUserIsLoggedIn();
+  }, []); // Se lance au premier rendu du composant
+
+  const isFormValid = isValidEmail(email.trim()) && password.trim() !== "";
+
+  const handleLogin = async () => {
+    setErrorMessage(""); // Reset erreur
+
+    if (!email.trim() || !password.trim()) {
+      setErrorMessage("Veuillez remplir tous les champs.");
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      setErrorMessage("Veuillez entrer une adresse email valide.");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const response = await fetch("http://localhost:1000/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.status === 200) {
+        await AsyncStorage.setItem("sessionUser", JSON.stringify({ user: data.user }));
+        router.replace("/"); // Redirige vers la page d'accueil après connexion réussie
+      } else {
+        const message = data?.content || data?.message || "Identifiants invalides.";
+        setErrorMessage(message);
+      }
+    } catch (error) {
+      console.error("Erreur réseau :", error);
+      setErrorMessage("Impossible de se connecter au serveur.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <View style={styles.container}>
-      <Stack.Screen options={{ title: "Connexion" }} /> 
+      <Stack.Screen options={{ title: "Connexion" }} />
       <Text style={styles.title}>Connexion</Text>
 
       <TextInput
@@ -32,8 +100,24 @@ export default function Login() {
         style={styles.input}
       />
 
-      <TouchableOpacity onPress={handleLogin} style={styles.button}>
-        <Text style={styles.buttonText}>Se connecter</Text>
+      {/* Message d'erreur en rouge */}
+      {errorMessage !== "" && (
+        <Text style={styles.errorText}>{errorMessage}</Text>
+      )}
+
+      <TouchableOpacity
+        onPress={handleLogin}
+        style={[
+          styles.button,
+          (!isFormValid || isLoading) && { opacity: 0.5 },
+        ]}
+        disabled={!isFormValid || isLoading}
+      >
+        {isLoading ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.buttonText}>Se connecter</Text>
+        )}
       </TouchableOpacity>
 
       <Link href="/auth/register" asChild>
@@ -44,48 +128,3 @@ export default function Login() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
-    backgroundColor: "#f8f9fa",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    color: "#333",
-  },
-  input: {
-    width: "100%",
-    padding: 12,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
-    marginBottom: 10,
-    backgroundColor: "#fff",
-  },
-  button: {
-    marginTop: 10,
-    backgroundColor: "#007bff",
-    padding: 12,
-    borderRadius: 5,
-    alignItems: "center",
-    width: "100%",
-  },
-  buttonText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  linkContainer: {
-    marginTop: 20,
-  },
-  linkText: {
-    color: "#007bff",
-    fontSize: 16,
-  },
-});
