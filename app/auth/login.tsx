@@ -10,7 +10,6 @@ import {
 import { Link, Stack, useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-// 🔍 Validation d'email
 const isValidEmail = (email: string) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
@@ -23,22 +22,21 @@ export default function Login() {
   const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
 
-  // Vérification si l'utilisateur est déjà connecté au chargement du composant
   useEffect(() => {
     const checkIfUserIsLoggedIn = async () => {
       const sessionUser = await AsyncStorage.getItem("sessionUser");
       if (sessionUser) {
-        router.replace("/"); // Redirige vers la page d'accueil si déjà connecté
+        router.replace("/"); 
       }
     };
 
     checkIfUserIsLoggedIn();
-  }, []); // Se lance au premier rendu du composant
+  }, []);
 
   const isFormValid = isValidEmail(email.trim()) && password.trim() !== "";
 
   const handleLogin = async () => {
-    setErrorMessage(""); // Reset erreur
+    setErrorMessage("");
 
     if (!email.trim() || !password.trim()) {
       setErrorMessage("Veuillez remplir tous les champs.");
@@ -100,7 +98,6 @@ export default function Login() {
         style={styles.input}
       />
 
-      {/* Message d'erreur en rouge */}
       {errorMessage !== "" && (
         <Text style={styles.errorText}>{errorMessage}</Text>
       )}
