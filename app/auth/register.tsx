@@ -61,7 +61,8 @@ export default function Register() {
       });
       const data = await response.json();
       if (response.ok) {
-        await AsyncStorage.setItem("sessionUser", JSON.stringify({ user: data.user }));
+        const userObj = { user: data.user, token: data.token }
+        await AsyncStorage.setItem("sessionUser", JSON.stringify(userObj));
         router.replace("/");
       } else {
         setErrorMessage(data.message || "Une erreur est survenue.");
@@ -135,14 +136,14 @@ export default function Register() {
           En m'inscrivant, j'adhère à la{' '}
           <Text
             style={styles.link}
-            onPress={() => router.push('/condition/privacy')}
+            onPress={() => router.push('/tos-privacy/privacy')}
           >
             politique de confidentialité
           </Text>
           {' '}et aux{' '}
           <Text
             style={styles.link}
-            onPress={() => router.push('/condition/terms')}
+            onPress={() => router.push('/tos-privacy/terms')}
           >
             conditions de service
           </Text>

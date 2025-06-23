@@ -62,7 +62,8 @@ export default function Login() {
       const data = await response.json();
 
       if (response.status === 200) {
-        await AsyncStorage.setItem("sessionUser", JSON.stringify({ user: data.user }));
+        const userObj = { user: data.user, token: data.token }
+        await AsyncStorage.setItem("sessionUser", JSON.stringify(userObj));
         router.replace("/"); // Redirige vers la page d'accueil après connexion réussie
       } else {
         const message = data?.content || data?.message || "Identifiants invalides.";
