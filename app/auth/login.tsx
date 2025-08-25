@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import styles from "./login.styles";
+import styles from "../styles/login.styles";
 import {
   View,
   Text,
@@ -22,14 +22,14 @@ export default function Login() {
   const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
 
+  // ⚠️ Sur le web, la home des tabs = "/"
   useEffect(() => {
     const checkIfUserIsLoggedIn = async () => {
       const sessionUser = await AsyncStorage.getItem("sessionUser");
       if (sessionUser) {
-        router.replace("/"); 
+        router.replace("/"); // pas "/(tabs)"
       }
     };
-
     checkIfUserIsLoggedIn();
   }, []);
 
@@ -53,18 +53,17 @@ export default function Login() {
     try {
       const response = await fetch("http://localhost:1000/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
       const data = await response.json();
 
       if (response.status === 200) {
-        const userObj = { user: data.user, token: data.token }
+        const userObj = { user: data.user, token: data.token };
         await AsyncStorage.setItem("sessionUser", JSON.stringify(userObj));
-        router.replace("/"); // Redirige vers la page d'accueil après connexion réussie
+        // Déclenche le re-check du RootLayout
+        router.replace("/"); // pas "/(tabs)"
       } else {
         const message = data?.content || data?.message || "Identifiants invalides.";
         setErrorMessage(message);
@@ -99,23 +98,14 @@ export default function Login() {
         style={styles.input}
       />
 
-      {errorMessage !== "" && (
-        <Text style={styles.errorText}>{errorMessage}</Text>
-      )}
+      {errorMessage !== "" && <Text style={styles.errorText}>{errorMessage}</Text>}
 
       <TouchableOpacity
         onPress={handleLogin}
-        style={[
-          styles.button,
-          (!isFormValid || isLoading) && { opacity: 0.5 },
-        ]}
+        style={[styles.button, (!isFormValid || isLoading) && { opacity: 0.5 }]}
         disabled={!isFormValid || isLoading}
       >
-        {isLoading ? (
-          <ActivityIndicator color="#fff" />
-        ) : (
-          <Text style={styles.buttonText}>Se connecter</Text>
-        )}
+        {isLoading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>Se connecter</Text>}
       </TouchableOpacity>
 
       <Link href="/auth/register" asChild>
