@@ -4,7 +4,12 @@ export const COLORS = THEME;
 
 const shadow = {
   ...Platform.select({
-    ios: { shadowColor: "#000", shadowOpacity: 0.08, shadowRadius: 10, shadowOffset: { width: 0, height: 4 } },
+    ios: {
+      shadowColor: "#000",
+      shadowOpacity: 0.08,
+      shadowRadius: 10,
+      shadowOffset: { width: 0, height: 4 },
+    },
     android: { elevation: 4 },
   }),
 };
@@ -41,7 +46,12 @@ export default StyleSheet.create({
   },
   image: { width: "100%", height: "100%", resizeMode: "cover" },
 
-  userName: { marginTop: 10, fontSize: 16, fontWeight: "700", color: COLORS.text },
+  userName: {
+    marginTop: 10,
+    fontSize: 16,
+    fontWeight: "700",
+    color: COLORS.text,
+  },
   memberSince: { marginTop: 2, fontSize: 12, color: COLORS.textMuted },
 
   card: {
@@ -81,7 +91,12 @@ export default StyleSheet.create({
   statLabel: { fontSize: 12, color: COLORS.textMuted },
   statValue: { marginTop: 2, fontWeight: "700", color: COLORS.text },
 
-  sectionTitleRow: { flexDirection: "row", alignItems: "center", marginBottom: 8, marginTop: 10 },
+  sectionTitleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 8,
+    marginTop: 10,
+  },
   sectionTitle: { fontWeight: "700", fontSize: 14, color: COLORS.orange },
 
   rowItem: {
@@ -163,7 +178,12 @@ export default StyleSheet.create({
     width: "85%",
     maxHeight: "70%",
   },
-  modalTitle: { fontSize: 16, fontWeight: "700", textAlign: "center", marginBottom: 10 },
+  modalTitle: {
+    fontSize: 16,
+    fontWeight: "700",
+    textAlign: "center",
+    marginBottom: 10,
+  },
   pfpGrid: { flexDirection: "row", flexWrap: "wrap", justifyContent: "center" },
   pfpItem: { margin: 6 },
   pfpImage: { width: 64, height: 64, borderRadius: 32 },

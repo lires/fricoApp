@@ -25,7 +25,11 @@ function TabIcon({
         backgroundColor: focused ? COLORS.orange : "transparent",
       }}
     >
-      <FontAwesome name={name} size={size} color={focused ? COLORS.white : color} />
+      <FontAwesome
+        name={name}
+        size={size}
+        color={focused ? COLORS.white : color}
+      />
     </View>
   );
 }
@@ -38,7 +42,11 @@ export default function TabsLayout() {
         tabBarShowLabel: false,
         tabBarActiveTintColor: COLORS.white,
         tabBarInactiveTintColor: COLORS.grey,
-        tabBarItemStyle: { justifyContent: "center", alignItems: "center", alignSelf:"center" },
+        tabBarItemStyle: {
+          justifyContent: "center",
+          alignItems: "center",
+          alignSelf: "center",
+        },
         tabBarStyle: {
           position: "absolute",
           left: 16,
@@ -68,7 +76,26 @@ export default function TabsLayout() {
         options={{
           title: "Accueil",
           tabBarIcon: ({ focused, size, color }) => (
-            <TabIcon name="home" focused={focused} size={UI.tabIconSize} color={color} />
+            <TabIcon
+              name="home"
+              focused={focused}
+              size={UI.tabIconSize}
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="favoris"
+        options={{
+          title: "Favoris",
+          tabBarIcon: ({ focused, size, color }) => (
+            <TabIcon
+              name="heart"
+              focused={focused}
+              size={UI.tabIconSize}
+              color={color}
+            />
           ),
         }}
       />
@@ -77,7 +104,12 @@ export default function TabsLayout() {
         options={{
           title: "Scan",
           tabBarIcon: ({ focused, size, color }) => (
-            <TabIcon name="camera" focused={focused} size={UI.tabIconSize} color={color} />
+            <TabIcon
+              name="camera"
+              focused={focused}
+              size={UI.tabIconSize}
+              color={color}
+            />
           ),
         }}
       />
@@ -86,7 +118,12 @@ export default function TabsLayout() {
         options={{
           title: "Profile",
           tabBarIcon: ({ focused, size, color }) => (
-            <TabIcon name="user" focused={focused} size={UI.tabIconSize} color={color} />
+            <TabIcon
+              name="user"
+              focused={focused}
+              size={UI.tabIconSize}
+              color={color}
+            />
           ),
         }}
       />
